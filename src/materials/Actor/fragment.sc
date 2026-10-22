@@ -4,6 +4,11 @@ $input v_color0, v_fog, v_light, v_texcoord0, v_edgemap
 #include <MinecraftRenderer.Materials/ActorUtil.dragonh>
 #include <newb/main.sh>
 
+#ifdef NL_TRIP
+  uniform vec4 FogColor;
+  uniform vec4 FogControl;
+#endif
+
 uniform vec4 ColorBased;
 uniform vec4 ChangeColor;
 uniform vec4 UseAlphaRewrite;
@@ -70,6 +75,10 @@ void main() {
   albedo.rgb = mix(albedo.rgb, v_fog.rgb, v_fog.a);
 
   albedo.rgb = colorCorrection(albedo.rgb);
+
+  #ifdef NL_TRIP
+    albedo.rgb = tripFarbe(albedo.rgb, tripDecode(FogColor.rgb, FogControl.xy));
+  #endif
 
   gl_FragColor = albedo;
 }

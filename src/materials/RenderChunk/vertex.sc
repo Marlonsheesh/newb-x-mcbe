@@ -26,6 +26,11 @@ void main() {
 
   vec3 worldPos = mul(model, vec4(a_position, 1.0)).xyz;
 
+  #ifdef NL_TRIP
+    // Seelenreich: Atmen um den Spieler, Steuerkanal laut STEUERKANAL.md
+    worldPos = tripAtmen(worldPos, ViewPositionAndTime.xyz, ViewPositionAndTime.w, tripDecode(FogColor.rgb, FogAndDistanceControl.xy));
+  #endif
+
   #if !(defined(DEPTH_ONLY_OPAQUE) || defined(DEPTH_ONLY) || defined(INSTANCING))
 
   #ifdef NL_CHUNK_LOAD_ANIM

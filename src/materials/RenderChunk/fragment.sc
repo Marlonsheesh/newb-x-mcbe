@@ -3,6 +3,11 @@ $input v_color0, v_color1, v_fog, v_refl, v_texcoord0, v_lightmapUV, v_extra
 #include <bgfx_shader.sh>
 #include <newb/main.sh>
 
+#ifdef NL_TRIP
+  uniform vec4 FogColor;
+  uniform vec4 FogAndDistanceControl;
+#endif
+
 SAMPLER2D_AUTOREG(s_MatTexture);
 SAMPLER2D_AUTOREG(s_SeasonsTexture);
 SAMPLER2D_AUTOREG(s_LightMapTexture);
@@ -56,7 +61,18 @@ void main() {
 
   diffuse.rgb = mix(diffuse.rgb, v_fog.rgb, v_fog.a);
 
+  #ifdef NL_TRIP
+    // Seelenreich: Kanten und Lichthöfe auf dem linearen Texel
+    TripState trip = tripDecode(FogColor.rgb, FogAndDistanceControl.xy);
+    diffuse.rgb = tripKanten(diffuse.rgb, trip);
+    diffuse.rgb = tripHalo(s_MatTexture, v_texcoord0, diffuse.rgb, trip);
+  #endif
+
   diffuse.rgb = colorCorrection(diffuse.rgb);
+
+  #ifdef NL_TRIP
+    diffuse.rgb = tripFarbe(diffuse.rgb, trip);
+  #endif
 
   gl_FragColor = diffuse;
 }

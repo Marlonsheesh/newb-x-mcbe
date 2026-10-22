@@ -36,6 +36,11 @@ void main() {
 
     skyColor = colorCorrection(skyColor);
 
+    #ifdef NL_TRIP
+      // Seelenreich: in Phase 1 nur Farbverstärkung am Himmel
+      skyColor = tripFarbe(skyColor, tripDecode(FogColor.rgb, FogAndDistanceControl.xy));
+    #endif
+
     gl_FragColor = vec4(skyColor, 1.0);
   #else
     gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);

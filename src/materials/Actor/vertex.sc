@@ -37,6 +37,11 @@ void main() {
     worldPosition = mul(World, vec4(a_position, 1.0)).xyz;
   #endif
 
+  #ifdef NL_TRIP
+    // Seelenreich: Atmen um den Spieler, Kennung über FogControl (Newb nutzt dort FogControl)
+    worldPosition = tripAtmen(worldPosition, ViewPositionAndTime.xyz, ViewPositionAndTime.w, tripDecode(FogColor.rgb, FogControl.xy));
+  #endif
+
   vec4 position = jitterVertexPosition(worldPosition);
 
   #if !(defined(DEPTH_ONLY_OPAQUE) || defined(DEPTH_ONLY) || defined(INSTANCING))
