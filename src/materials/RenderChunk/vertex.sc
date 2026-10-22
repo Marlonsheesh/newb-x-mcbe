@@ -2,7 +2,7 @@ $input a_color0, a_position, a_texcoord0, a_texcoord1
 #ifdef INSTANCING
   $input i_data0, i_data1, i_data2, i_data3
 #endif
-$output v_color0, v_color1, v_fog, v_refl, v_texcoord0, v_lightmapUV, v_extra
+$output v_color0, v_color1, v_fog, v_refl, v_texcoord0, v_lightmapUV, v_extra, v_trip
 
 #include <bgfx_shader.sh>
 #include <newb/main.sh>
@@ -26,9 +26,17 @@ void main() {
 
   vec3 worldPos = mul(model, vec4(a_position, 1.0)).xyz;
 
+  // Seelenreich: Weltposition vor jeder Trip-Verzerrung. Blockmuster (Farbe, Geometrie) bleiben so
+  // stabil, auch wenn Atmen und Raum die Geometrie bewegen.
+  vec3 gPosRoh = worldPos + CameraPosition.xyz;
+
   #ifdef NL_TRIP
-    // Seelenreich: Atmen um den Spieler, Steuerkanal laut STEUERKANAL.md
-    worldPos = tripAtmen(worldPos, ViewPositionAndTime.xyz, ViewPositionAndTime.w, tripDecode(FogColor.rgb, FogAndDistanceControl.xy));
+    // Seelenreich: Atmen und Raum um den Spieler, Steuerkanal laut STEUERKANAL.md
+    TripState trip = tripDecode(FogColor.rgb, FogAndDistanceControl.xy);
+    worldPos = tripAtmen(worldPos, ViewPositionAndTime.xyz, ViewPositionAndTime.w, trip);
+    #ifdef NL_TRIP_TIEFE
+      worldPos = tripRaum(worldPos, ViewPositionAndTime.xyz, ViewPositionAndTime.w, trip);
+    #endif
   #endif
 
   #if !(defined(DEPTH_ONLY_OPAQUE) || defined(DEPTH_ONLY) || defined(INSTANCING))
@@ -185,6 +193,7 @@ void main() {
   #endif
 
   v_extra = vec4(shade, worldPos.y, water, shimmer);
+  v_trip = vec4(gPosRoh, float(isTree));
   v_refl = refl;
   v_texcoord0 = uv0;
   v_lightmapUV = uv1;

@@ -34,11 +34,20 @@ void main() {
       skyColor += NL_GALAXY_STARS*nlRenderGalaxy(viewDir, env.fogCol, env, v_underwaterRainTimeDay.z);
     #endif
 
+    #ifdef NL_TRIP
+      // Seelenreich: Lichthof um die Sonne (Stufe 1), Rekursion am Himmel (Stufe 3 ff.)
+      TripState trip = tripDecode(FogColor.rgb, FogAndDistanceControl.xy);
+      skyColor = tripHimmelsHalo(skyColor, -viewDir, env.sunDir, trip);
+      #ifdef NL_TRIP_TIEFE
+        skyColor = tripRekursion(skyColor, -viewDir, v_underwaterRainTimeDay.z, trip);
+      #endif
+    #endif
+
     skyColor = colorCorrection(skyColor);
 
     #ifdef NL_TRIP
-      // Seelenreich: in Phase 1 nur Farbverstärkung am Himmel
-      skyColor = tripFarbe(skyColor, tripDecode(FogColor.rgb, FogAndDistanceControl.xy));
+      // Farbverstärkung am Himmel (das Himmels-Mandala ist noch offen)
+      skyColor = tripFarbe(skyColor, trip);
     #endif
 
     gl_FragColor = vec4(skyColor, 1.0);

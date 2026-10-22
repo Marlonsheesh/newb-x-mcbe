@@ -38,8 +38,13 @@ void main() {
   #endif
 
   #ifdef NL_TRIP
-    // Seelenreich: Atmen um den Spieler, Kennung über FogControl (Newb nutzt dort FogControl)
-    worldPosition = tripAtmen(worldPosition, ViewPositionAndTime.xyz, ViewPositionAndTime.w, tripDecode(FogColor.rgb, FogControl.xy));
+    // Seelenreich: Atmen und Raum um den Spieler. Actor.material.bin trägt FogControl (nicht
+    // FogAndDistanceControl), darum liest der Trip dort FogControl.xy.
+    TripState trip = tripDecode(FogColor.rgb, FogControl.xy);
+    worldPosition = tripAtmen(worldPosition, ViewPositionAndTime.xyz, ViewPositionAndTime.w, trip);
+    #ifdef NL_TRIP_TIEFE
+      worldPosition = tripRaum(worldPosition, ViewPositionAndTime.xyz, ViewPositionAndTime.w, trip);
+    #endif
   #endif
 
   vec4 position = jitterVertexPosition(worldPosition);

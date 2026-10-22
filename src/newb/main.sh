@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "functions/tonemap.h"
+#include "functions/trip.h"
 #include "functions/detection.h"
 #include "functions/fog.h"
 #include "functions/sky.h"

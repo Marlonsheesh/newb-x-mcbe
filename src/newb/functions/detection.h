@@ -40,7 +40,11 @@ bool detectUnderwater(vec3 FOG_COLOR, vec2 FOG_CONTROL) {
   return FOG_CONTROL.x==0.0 && FOG_CONTROL.y<0.8 && (FOG_COLOR.b>FOG_COLOR.r || FOG_COLOR.g>FOG_COLOR.r);
 }
 
-float detectRain(vec3 FOG_CONTROL) {
+float detectRain(vec3 FOG_COLOR, vec3 FOG_CONTROL) {
+  #ifdef NL_TRIP
+    // Seelenreich: die Trip-Nebelwerte (Stufe, Phase) dürfen keine Regen-Erkennung auslösen
+    if (tripDecode(FOG_COLOR, FOG_CONTROL.xy).stufe >= 1.0) { return 0.0; }
+  #endif
   // clear fogctrl.x varies with render distance (z)
   // reverse plotted as 0.5 + 1.25/k (k is renderdistance in chunks, fogctrl.z = k*16)
   vec2 clear = vec2(0.5 + 20.0/FOG_CONTROL.z, 1.0); // clear fogctrl value
@@ -77,7 +81,7 @@ nl_environment nlDetectEnvironment(float TIME_OF_DAY, vec3 FOG_COLOR, vec3 FOG_C
   env.end = detectEnd(FOG_COLOR);
   env.nether = detectNether(FOG_COLOR, FOG_CONTROL.xy);
   env.underwater = detectUnderwater(FOG_COLOR, FOG_CONTROL.xy);
-  env.rainFactor = detectRain(FOG_CONTROL.xyz);
+  env.rainFactor = detectRain(FOG_COLOR, FOG_CONTROL.xyz);
   env.fogCol = FOG_COLOR;
   env = calculateSunParams(env, TIME_OF_DAY);
   return env;

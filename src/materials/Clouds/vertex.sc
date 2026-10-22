@@ -12,6 +12,7 @@ $output v_color0
 #include <newb/main.sh>
 
 // uniform vec4 CloudColor;
+uniform vec4 FogColor;
 uniform vec4 FogAndDistanceControl;
 uniform vec4 ViewPositionAndTime;
 uniform vec4 TimeOfDay;
@@ -29,7 +30,7 @@ void main() {
   #endif
 
   float t = ViewPositionAndTime.w;
-  float rain = detectRain(FogAndDistanceControl.xyz);
+  float rain = detectRain(FogColor.rgb, FogAndDistanceControl.xyz);
 
   nl_environment env;
   env.end = false;
