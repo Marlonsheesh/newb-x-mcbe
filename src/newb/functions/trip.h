@@ -108,7 +108,12 @@ vec3 tripKanten(vec3 col, TripState ts) {
   float e = tripEinsatz(ts, TRIP_EINSATZ_KANTEN);
   if (e <= 0.0) { return col; }
   float lum = luminance(col);
-  float kante = clamp((abs(dFdx(lum)) + abs(dFdy(lum)))*TRIP_KANTEN_VERSTAERKUNG, 0.0, 1.0);
+  #if BGFX_SHADER_TYPE_FRAGMENT
+    // Ableitungen gibt es nur im Fragment-Shader; der Vertex-Compiler prüft die Funktion trotzdem
+    float kante = clamp((abs(dFdx(lum)) + abs(dFdy(lum)))*TRIP_KANTEN_VERSTAERKUNG, 0.0, 1.0);
+  #else
+    float kante = 0.0;
+  #endif
   return col + kante*e*TRIP_KANTEN_STAERKE*vec3(1.0, 0.72, 0.35);
 }
 
