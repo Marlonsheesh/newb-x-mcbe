@@ -38,6 +38,7 @@
 #define TRIP_EINSATZ_GEOMETRIE  2.0
 #define TRIP_EINSATZ_RAUM       2.0
 #define TRIP_EINSATZ_REKURSION  3.0
+#define TRIP_EINSATZ_MANDALA    3.0
 #define TRIP_EINSATZ_TUNNEL     4.0  // im Dunkeln
 #define TRIP_EINSATZ_TUNNEL_BLENDE 1.0 // in der Blende immer, ab Stufe 1
 
@@ -366,9 +367,32 @@ vec3 tripTunnel(vec3 col, vec3 rel, float dunkel, float t, TripState ts) {
   return mix(col, tunnelFarbe, w);
 }
 
-// Himmels-Mandala: Stufe und Zählung (6-, 8- oder 12-zählig) offen, Rückfrage an Marlon. Platzhalter.
-vec3 tripHimmelsMandala(vec3 col, vec3 viewDir, TripState ts) {
-  return col;
+// Himmels-Mandala (Stufe 3 ff.): symmetrisches Muster um einen Mittelpunkt am Himmel
+// (zentrum = Sonnenrichtung, oder der Zenit (0,1,0) als Alternative). Zählung je Stufe:
+// 3 → 6-zählig, 4 → 8-zählig, 5 → 12-zählig. Organisch weich, kristallin (ab Stufe 4) harte Kanten.
+// blick zeigt vom Spieler zum Himmel (wie in nlRenderSky). Gewicht 0,15 … 0,4 nach Intensität
+// mal Phasengewicht, additiv in Gold (organisch) bzw. Türkis/Violett (kristallin).
+vec3 tripHimmelsMandala(vec3 col, vec3 blick, vec3 zentrum, float t, TripState ts) {
+  float e = tripEinsatzWeich(ts.stufe, TRIP_EINSATZ_MANDALA)*tripPhasenGewicht(ts.phase);
+  if (e <= 0.0) { return col; }
+  // Orthonormale Basis um den Mittelpunkt
+  vec3 hilfe = abs(zentrum.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+  vec3 t1 = normalize(cross(zentrum, hilfe));
+  vec3 t2 = cross(zentrum, t1);
+  float az = atan2(dot(blick, t2), dot(blick, t1));
+  float rho = 1.0 - dot(blick, zentrum); // 0 im Mittelpunkt, bis 2 gegenüber
+  // Zählung je Stufe: 6 bei 3, 8 bei 4, 12 bei 5
+  float zaehl = mix(6.0, 8.0, step(3.5, ts.stufe));
+  zaehl = mix(zaehl, 12.0, step(4.5, ts.stufe));
+  // Blütenblätter (zaehl-zählig) und konzentrische Ringe, mit Abklingen zum Rand
+  float blatt = cos(zaehl*az);
+  float ring = cos(14.0*rho - 0.4*t*(1.0 + 0.8*ts.kristall));
+  float m = 0.5 + 0.5*blatt*ring;
+  m = mix(m, step(0.5, m), ts.kristall);
+  m *= 1.0 - smoothstep(0.2, 1.4, rho);
+  float gew = mix(0.15, 0.4, ts.intensitaet)*e;
+  vec3 farbe = mix(vec3(1.0, 0.8, 0.5), vec3(0.5, 0.9, 1.0), ts.kristall);
+  return col + gew*m*farbe;
 }
 
 #endif // NL_TRIP_TIEFE

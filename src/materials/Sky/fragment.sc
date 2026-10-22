@@ -40,13 +40,15 @@ void main() {
       skyColor = tripHimmelsHalo(skyColor, -viewDir, env.sunDir, trip);
       #ifdef NL_TRIP_TIEFE
         skyColor = tripRekursion(skyColor, -viewDir, v_underwaterRainTimeDay.z, trip);
+        // Himmels-Mandala um die Sonne (Stufe 3 ff.)
+        skyColor = tripHimmelsMandala(skyColor, -viewDir, env.sunDir, v_underwaterRainTimeDay.z, trip);
       #endif
     #endif
 
     skyColor = colorCorrection(skyColor);
 
     #ifdef NL_TRIP
-      // Farbverstärkung am Himmel (das Himmels-Mandala ist noch offen)
+      // Farbverstärkung am Himmel
       skyColor = tripFarbe(skyColor, trip);
     #endif
 
