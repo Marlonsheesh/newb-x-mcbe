@@ -1,13 +1,13 @@
-name = "Seelenreich Shader"
+name = "Natürlich+"
 version = [0, 1, 0] # Anzeige "1.0" (version[1].version[2]); -v setzt den letzten Wert
 min_supported_mc_version = [1, 26, 50]
 description = '''
-Trip-Shader für Seelenreich (Newb-X-Fork), Bedrock 1.26.50+
+Natürlich+ (Newb-X-Fork): Vanilla-nahe Farben, realistische Wolken, Lichtstrahlen, Nachthimmel. Ohne Trip-Schicht, läuft in jeder Welt. Bedrock 1.26.50+
 '''
 authors = ["devendrn"]
 url = "https://github.com/Marlonsheesh/newb-x-mcbe"
-uuid = "445c4b97-1860-45f0-9a7e-d4178abb4753" # Header-UUID des Seelenreich-Packs (eigene, nicht Newb)
-module_uuid = "d1c478df-794c-42b6-969c-5ba133e3e379" # Modul-UUID des Resource-Moduls (eigene, nicht Newb)
+uuid = "baff700b-4acc-4b36-a24b-581815eda915" # Header-UUID des Packs Natürlich+ (eigene, nicht Newb)
+module_uuid = "bb735044-4f70-4343-8e62-8e4e8e711c5b" # Modul-UUID des Packs Natürlich+ (eigene, nicht Newb)
 materials = ["Actor", "ActorGlint", "ActorMultiTexture", "Clouds", "EndSky", "ItemInHandColor", "ItemInHandColorGlint", "ItemInHandTextured", "RenderChunk","Sky", "Stars", "SunMoon", "Weather"]
 
 [info] 

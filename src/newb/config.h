@@ -218,11 +218,11 @@
 #define NL_LAVA_NOISE_SPEED 0.2  // 0.0 still ~ 0.8 fast
 
 /* Seelenreich-Trip (Steuerkanal, Vertrag in STEUERKANAL.md, Code in functions/trip.h) */
-#define NL_TRIP                   // [toggle] Trip-Effekte, nur bei gültiger Nebel-Kennung aktiv
+//#define NL_TRIP                   // [toggle] Trip-Effekte, nur bei gültiger Nebel-Kennung aktiv
 #define NL_TRIP_ATEM_AMP_MIN 0.02 // Atmen: Amplitude in Blöcken bei Stufe 1 (vor Phasengewicht)
 #define NL_TRIP_ATEM_AMP_MAX 0.08 // Atmen: Amplitude in Blöcken bei Stufe 5 (vor Phasengewicht)
 #define NL_TRIP_ATEM_PERIOD 7.5   // Atmen: Periode in Sekunden (6 bis 9)
-#define NL_TRIP_TIEFE           // [toggle] Stufe 2 bis 4: Fließen, Farbwandel, Geometrie, Raum, Rekursion, Tunnel
+//#define NL_TRIP_TIEFE           // [toggle] Stufe 2 bis 4: Fließen, Farbwandel, Geometrie, Raum, Rekursion, Tunnel
 
 /*
   NEWB SHADER SUBPACK CONFIG
